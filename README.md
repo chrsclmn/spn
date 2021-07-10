@@ -1,6 +1,8 @@
 # spn
 
-A simple CLI for the Wayback Machine's Save Page Now (SPN) API
+A simple CLI for the Wayback Machine's Save Page Now (SPN) API.
+
+Give it a URL or a list of URLs and it will ask the Wayback Machine to capture those URLs.
 
 ## install
 ```bash
