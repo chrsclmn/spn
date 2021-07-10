@@ -38,3 +38,6 @@ export SPN_SECRET_KEY=YOUR_SECRET_KEY
 
 spn https://some.site/ https://some.site/some/page/
 ```
+
+## keys
+get your API keys here: https://archive.org/account/s3.php
