@@ -19,7 +19,12 @@ class SPN(requests.Session):
 
     def request(self, method, url, *args, **kwargs):
         url = urllib.parse.urljoin(self.base_url, url)
-        r = super().request(method, url, *args, **kwargs)
+        while True:
+            r = super().request(method, url, *args, **kwargs)
+            if r.status_code == 429:
+                time.sleep(10)
+            else:
+                break
         r.raise_for_status()
         return r
 
@@ -28,6 +33,13 @@ class SPN(requests.Session):
 
     def status(self, job_id):
         return self.get(f'save/status/{job_id}').json()
+
+    def await_status(self, job_id):
+        while True:
+            status = self.status(job_id)
+            if status['status'] != 'pending':
+                return status
+            time.sleep(10)
 
 
 @click.command()
@@ -52,34 +64,19 @@ def main(urls, access_key, secret_key, verify, **kwargs):
     spn = SPN(access_key, secret_key)
     rv = []
     for url in urls:
+        click.secho('capture:', nl=False, fg='blue')
         click.echo(url)
-        delay = 0
-        while True:
-            time.sleep(delay)
-            try:
-                r = spn.save(url, **kwargs)
-            except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 429:
-                    delay = min(delay + 1, 30)
-                else:
-                    raise
-            else:
-                if verify:
-                    rv.append(r)
-                break
+        r = spn.save(url, **kwargs)
+        if verify:
+            rv.append(r)
         if 'message' in r:
             click.secho(r['message'], fg='red')
     for r in rv:
-        click.echo('verify:' + r['url'] + ':', nl=False)
-        delay = 0
-        while True:
-            time.sleep(delay)
-            status = spn.status(r['job_id'])
-            if status['status'] != 'pending':
-                break
-            delay = min(delay + 1, 30)
-        r['status'] = status['status']
-        click.secho(r['status'], fg={'success': 'green'}.get(r['status'], 'red')) # noqa
+        click.secho('verify:', nl=False, fg='blue')
+        click.echo(r['url'] + ':', nl=False)
+        status = spn.await_status(r['job_id'])
+        status = r['status'] = status['status']
+        click.secho(status, fg={'success': 'green'}.get(status, 'red'))
     sys.exit(any([r['status'] != 'success' for r in rv]))
 
 
