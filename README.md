@@ -2,8 +2,6 @@
 
 A simple CLI for the Wayback Machine's Save Page Now (SPN) API.
 
-Given a URL or a list of URLs it will ask the Internet Archive's Wayback Machine to capture those URLs right now.
-
 ## Installation
 ```bash
 pip install spn
