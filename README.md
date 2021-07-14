@@ -42,5 +42,5 @@ spn https://your.site/page/1 https://your.site/page/2
 ## API Keys
 Get your API keys here: https://archive.org/account/s3.php
 
-## SPN2 API docs
+## API Docs
 https://docs.google.com/document/d/1Nsv52MvSjbLb2PCpHlat0gkzw0EvtSgpKHu4mk0MnrA/edit
