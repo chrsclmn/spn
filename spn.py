@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import time
 import sys
+import time
 import urllib.parse
 
 import click
@@ -46,6 +46,7 @@ class SPN(requests.Session):
 @click.argument('urls', nargs=-1)
 @click.option('--access-key', required=True)
 @click.option('--secret-key', required=True)
+@click.option('--stdin', is_flag=True)
 @click.option('--verify', is_flag=True)
 @click.option('--capture-all', type=int, is_flag=True)
 @click.option('--capture-outlinks', type=int, is_flag=True)
@@ -60,9 +61,14 @@ class SPN(requests.Session):
 @click.option('--capture-cookie')
 @click.option('--target-username')
 @click.option('--target-password')
-def cli(urls, access_key, secret_key, verify, **kwargs):
+def cli(urls, access_key, secret_key, stdin, verify, **kwargs):
     spn = SPN(access_key, secret_key)
     rv = []
+    if stdin:
+        def url_generator():
+            for url in sys.stdin:
+                yield url.rstrip()
+        urls = url_generator()
     for url in urls:
         click.secho('capture:', nl=False, fg='blue')
         click.echo(url)
