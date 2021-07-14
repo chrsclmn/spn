@@ -60,7 +60,7 @@ class SPN(requests.Session):
 @click.option('--capture-cookie')
 @click.option('--target-username')
 @click.option('--target-password')
-def main(urls, access_key, secret_key, verify, **kwargs):
+def cli(urls, access_key, secret_key, verify, **kwargs):
     spn = SPN(access_key, secret_key)
     rv = []
     for url in urls:
@@ -80,5 +80,9 @@ def main(urls, access_key, secret_key, verify, **kwargs):
     sys.exit(any([r['status'] != 'success' for r in rv]))
 
 
+def main():
+    cli(auto_envvar_prefix='SPN')
+
+
 if __name__ == '__main__':
-    main(auto_envvar_prefix='SPN')
+    main()
