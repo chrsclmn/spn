@@ -14,6 +14,7 @@ Usage: spn [OPTIONS] [URLS]...
 Options:
   --access-key TEXT              [required]
   --secret-key TEXT              [required]
+  --stdin
   --verify
   --capture-all
   --capture-outlinks
